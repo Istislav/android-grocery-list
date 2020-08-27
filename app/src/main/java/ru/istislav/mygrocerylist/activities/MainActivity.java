@@ -9,6 +9,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
 import android.view.View;
 
 import android.view.Menu;
@@ -19,6 +20,8 @@ import android.widget.EditText;
 import java.io.BufferedReader;
 
 import ru.istislav.mygrocerylist.R;
+import ru.istislav.mygrocerylist.data.DatabaseHandler;
+import ru.istislav.mygrocerylist.model.Grocery;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,11 +30,14 @@ public class MainActivity extends AppCompatActivity {
     private EditText groceryItem;
     private EditText quantity;
     private Button saveButton;
+    private DatabaseHandler db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        db = new DatabaseHandler(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -83,12 +89,28 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Save to db & go to the next screen
-                saveGroceryToDB(v);
+                if(!groceryItem.getText().toString().isEmpty()
+                    && !quantity.getText().toString().isEmpty()) {
+                    saveGroceryToDB(v);
+                }
             }
 
         });
     }
 
     private void saveGroceryToDB(View v) {
+        Grocery grocery = new Grocery();
+
+        String newGroceryTitle = groceryItem.getText().toString();
+        String newGroceryQuantity = quantity.getText().toString();
+
+        grocery.setName(newGroceryTitle);
+        grocery.setQuantity(newGroceryQuantity);
+
+        // saving to db
+        db.addGrocery(grocery);
+
+        Snackbar.make(v, "Item Saved!", Snackbar.LENGTH_SHORT).show();
+        Log.d("Item added ID: ", String.valueOf(db.getGroceryCount()));
     }
 }

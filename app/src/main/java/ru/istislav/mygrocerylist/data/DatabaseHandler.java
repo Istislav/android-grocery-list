@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import ru.istislav.mygrocerylist.activities.MainActivity;
 import ru.istislav.mygrocerylist.model.Grocery;
 import ru.istislav.mygrocerylist.util.Constants;
 
@@ -22,6 +23,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private Context ctx;
 
     public DatabaseHandler(@Nullable Context context, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
+        super(context, Constants.DB_NAME, factory, Constants.DB_VERSION);
+        this.ctx = context;
+    }
+
+    public DatabaseHandler(@Nullable Context context) {
         super(context, Constants.DB_NAME, null, Constants.DB_VERSION);
         this.ctx = context;
     }
@@ -48,7 +54,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * CRUD OPERATIONS: Create, Read, Update, Delete Methods
      */
 
-    public void AddGrocery(Grocery grocery) {
+    public void addGrocery(Grocery grocery) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         ContentValues values = valuesFromGrocery(grocery);
