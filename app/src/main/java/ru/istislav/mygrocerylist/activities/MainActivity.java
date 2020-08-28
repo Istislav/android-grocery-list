@@ -1,5 +1,6 @@
 package ru.istislav.mygrocerylist.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -9,6 +10,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 
@@ -112,5 +114,15 @@ public class MainActivity extends AppCompatActivity {
 
         Snackbar.make(v, "Item Saved!", Snackbar.LENGTH_SHORT).show();
         Log.d("Item added ID: ", String.valueOf(db.getGroceryCount()));
+
+        // delayed execution
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                dialog.dismiss();
+                startActivity(new Intent(MainActivity.this, ListActivity.class));
+            }
+        }, 1200);
+
     }
 }
