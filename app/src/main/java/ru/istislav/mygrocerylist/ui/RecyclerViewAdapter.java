@@ -99,5 +99,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     break;
             }
         }
+
+        public void deleteItem(int id) {
+
+        }
     }
 }
