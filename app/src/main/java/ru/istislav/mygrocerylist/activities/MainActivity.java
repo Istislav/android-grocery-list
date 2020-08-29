@@ -40,6 +40,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         db = new DatabaseHandler(this);
+
+        byPassActivity();
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -124,5 +127,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }, 1200);
 
+    }
+
+    public void byPassActivity() {
+        if(db.getGroceryCount() > 0) {
+            startActivity(new Intent(MainActivity.this, ListActivity.class));;
+            finish();
+        }
     }
 }
