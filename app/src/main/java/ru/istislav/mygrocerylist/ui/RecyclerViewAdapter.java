@@ -7,10 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
@@ -97,12 +100,20 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         @Override
         public void onClick(View v) {
+            int position;
+            Grocery grocery;
+
             switch (v.getId()) {
                 case R.id.editButton:
+                    position = getAdapterPosition();
+                    grocery = groceryItems.get(position);
+
+                    editItem(grocery);
                     break;
                 case R.id.deleteButton:
-                    int position = getAdapterPosition();
-                    Grocery grocery = groceryItems.get(position);
+                    position = getAdapterPosition();
+                    grocery = groceryItems.get(position);
+
                     deleteItem(grocery.getId());
                     break;
             }
@@ -139,6 +150,51 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     notifyItemRemoved(getAdapterPosition());
 
                     dialog.dismiss();
+                }
+            });
+        }
+
+        public void editItem(final Grocery grocery) {
+            final DatabaseHandler db = new DatabaseHandler(context);
+
+            int grId = grocery.getId();
+            final Grocery dbGrocery = db.getGrocery(grId);
+
+            alertDialogBuilder = new AlertDialog.Builder(context);
+
+            inflater = LayoutInflater.from(context);
+            final View view  = inflater.inflate(R.layout.popup, null);
+
+            final EditText groceryItem = (EditText) view.findViewById(R.id.groceryItem);
+            final EditText quantity = (EditText) view.findViewById(R.id.groceryQty);
+            final TextView title = (TextView) view.findViewById(R.id.popupLayoutTitle);
+            Button saveButton = (Button) view.findViewById(R.id.saveButton);
+
+            groceryItem.setText(dbGrocery.getName());
+            quantity.setText(dbGrocery.getQuantity());
+            title.setText("Edit grocery");
+            alertDialogBuilder.setView(view);
+            dialog = alertDialogBuilder.create();
+            dialog.show();
+
+            saveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Update item
+                    dbGrocery.setName(groceryItem.getText().toString());
+                    dbGrocery.setQuantity(quantity.getText().toString());
+                    grocery.setName(groceryItem.getText().toString());
+                    grocery.setQuantity("Qty: " + quantity.getText().toString());
+
+                    if (!groceryItem.getText().toString().isEmpty()
+                            && !quantity.getText().toString().isEmpty()) {
+                        db.updateGrocery(dbGrocery);
+                        notifyItemChanged(getAdapterPosition(), grocery);
+                        dialog.dismiss();
+                    } else {
+                        Snackbar.make(view, "Add Grocery Name and Quantity",
+                                                        Snackbar.LENGTH_SHORT).show();
+                    }
                 }
             });
         }
