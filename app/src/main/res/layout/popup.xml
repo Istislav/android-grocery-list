@@ -12,7 +12,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
             <TextView
-                android:id="@+id/title"
+                android:id="@+id/popupLayoutTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
@@ -23,7 +23,7 @@
 
             <EditText
                 android:id="@+id/groceryItem"
-                android:layout_below="@+id/title"
+                android:layout_below="@+id/popupLayoutTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/hint_item"/>
